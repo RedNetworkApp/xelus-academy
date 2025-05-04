@@ -8,236 +8,543 @@ import {
   FaPuzzlePiece, FaTrophy, FaHandsHelping 
 } from 'react-icons/fa';
 import CourseLearning from '@/components/courses/CourseLearning';
-import { lessons as htmlLessons, courseInfo as htmlCourseInfo } from './html-basics';
-import { lessons as cssLessons, courseInfo as cssCourseInfo } from './css-basics';
-import { lessons as gitLessons, courseInfo as gitCourseInfo } from './git-basics';
-import { lessons as jsLessons, courseInfo as jsCourseInfo } from './javascript-basics';
-import { lessons as reactLessons, courseInfo as reactCourseInfo } from './react-fundamentals';
-import { lessons as nodeLessons, courseInfo as nodeCourseInfo } from './nodejs-essentials';
-import { lessons as pythonLessons, courseInfo as pythonCourseInfo } from './python-basics';
-import { lessons as dbLessons, courseInfo as dbCourseInfo } from './database-fundamentals';
+import { Course, Module, Lesson } from '@/types/course';
+import { LessonContent } from '@/types/course-content';
+import { courseInfo as nodeCourseInfo } from './nodejs-essentials';
 
-import type { LessonContent } from '@/types/course-content';
+const htmlLessons: Module[] = [
+  {
+    id: 'module-1',
+    title: 'HTML Fundamentals',
+    description: 'Learn the basics of HTML',
+    duration: '1 hour',
+    order: 1,
+    lessons: [
+      {
+        id: 'lesson-1',
+        title: 'Introduction to HTML',
+        duration: '15 minutes',
+        content: {
+          type: 'text',
+          title: 'HTML Basics',
+          text: 'Learn about HTML tags and structure',
+          duration: '15 minutes'
+        },
+        order: 1
+      },
+      {
+        id: 'lesson-2',
+        title: 'HTML Elements',
+        duration: '15 minutes',
+        content: {
+          type: 'video',
+          title: 'Working with HTML Elements',
+          videoUrl: 'https://example.com/html-elements',
+          duration: '15 minutes'
+        },
+        order: 2
+      }
+    ]
+  }
+];
 
-interface Course {
-  id: string;
-  title: string;
-  description: string;
-  studentsEnrolled: number;
-  rating: number;
-  duration: string;
-  level: string;
-  price: number;
-  thumbnail?: string;
-  instructor: {
-    name: string;
-    expertise: string[];
-  };
-  category: string;
-  curriculum: {
-    title: string;
-    content: LessonContent[];
-  }[];
-  features: string[];
-  syllabus: string[];
-}
+const cssLessons: Module[] = [
+  {
+    id: 'module-1',
+    title: 'CSS Fundamentals',
+    description: 'Learn the basics of CSS',
+    duration: '1 hour',
+    order: 1,
+    lessons: [
+      {
+        id: 'lesson-1',
+        title: 'Introduction to CSS',
+        duration: '15 minutes',
+        content: {
+          type: 'text',
+          title: 'CSS Basics',
+          text: 'Learn about CSS selectors and properties',
+          duration: '15 minutes'
+        },
+        order: 1
+      },
+      {
+        id: 'lesson-2',
+        title: 'CSS Box Model',
+        duration: '15 minutes',
+        content: {
+          type: 'video',
+          title: 'Understanding the Box Model',
+          videoUrl: 'https://example.com/css-box-model',
+          duration: '15 minutes'
+        },
+        order: 2
+      }
+    ]
+  }
+];
 
-interface Course {
-  id: string;
-  title: string;
-  description: string;
-  studentsEnrolled: number;
-  rating: number;
-  duration: string;
-  level: string;
-  price: number;
-  thumbnail?: string;
-  instructor: {
-    name: string;
-    expertise: string[];
-  };
-  category: string;
-  curriculum: {
-    title: string;
-    content: LessonContent[];
-  }[];
-  features: string[];
-}
+const gitLessons: Module[] = [
+  {
+    id: 'module-1',
+    title: 'Git Basics',
+    description: 'Learn version control with Git',
+    duration: '1 hour',
+    order: 1,
+    lessons: [
+      {
+        id: 'lesson-1',
+        title: 'Introduction to Git',
+        duration: '15 minutes',
+        content: {
+          type: 'text',
+          title: 'Git Fundamentals',
+          text: 'Learn about version control with Git',
+          duration: '15 minutes'
+        },
+        order: 1
+      },
+      {
+        id: 'lesson-2',
+        title: 'Git Commands',
+        duration: '15 minutes',
+        content: {
+          type: 'video',
+          title: 'Basic Git Commands',
+          videoUrl: 'https://example.com/git-commands',
+          duration: '15 minutes'
+        },
+        order: 2
+      }
+    ]
+  }
+];
+
+const jsLessons: Module[] = [
+  {
+    id: 'module-1',
+    title: 'JavaScript Fundamentals',
+    description: 'Learn the basics of JavaScript',
+    duration: '1 hour',
+    order: 1,
+    lessons: [
+      {
+        id: 'lesson-1',
+        title: 'Introduction to JavaScript',
+        duration: '15 minutes',
+        content: {
+          type: 'text',
+          title: 'JavaScript Basics',
+          text: 'Learn about JavaScript variables and data types',
+          duration: '15 minutes'
+        },
+        order: 1
+      },
+      {
+        id: 'lesson-2',
+        title: 'JavaScript Functions',
+        duration: '15 minutes',
+        content: {
+          type: 'video',
+          title: 'Working with JavaScript Functions',
+          videoUrl: 'https://example.com/javascript-functions',
+          duration: '15 minutes'
+        },
+        order: 2
+      }
+    ]
+  }
+];
+
+const reactLessons: Module[] = [
+  {
+    id: 'module-1',
+    title: 'React Fundamentals',
+    description: 'Learn the basics of React',
+    duration: '1 hour',
+    order: 1,
+    lessons: [
+      {
+        id: 'lesson-1',
+        title: 'Introduction to React',
+        duration: '15 minutes',
+        content: {
+          type: 'text',
+          title: 'React Basics',
+          text: 'Learn about React components and JSX',
+          duration: '15 minutes'
+        },
+        order: 1
+      },
+      {
+        id: 'lesson-2',
+        title: 'React State and Props',
+        duration: '15 minutes',
+        content: {
+          type: 'video',
+          title: 'Working with React State and Props',
+          videoUrl: 'https://example.com/react-state-props',
+          duration: '15 minutes'
+        },
+        order: 2
+      }
+    ]
+  }
+];
+
+const nodeLessons: Module[] = [
+  {
+    id: 'module-1',
+    title: 'Node.js Fundamentals',
+    description: 'Learn the basics of Node.js',
+    duration: '1 hour',
+    order: 1,
+    lessons: [
+      {
+        id: 'lesson-1',
+        title: 'Introduction to Node.js',
+        duration: '15 minutes',
+        content: {
+          type: 'text',
+          title: 'Node.js Basics',
+          text: 'Learn about Node.js and its ecosystem',
+          duration: '15 minutes'
+        },
+        order: 1
+      },
+      {
+        id: 'lesson-2',
+        title: 'Node.js Modules and Packages',
+        duration: '15 minutes',
+        content: {
+          type: 'video',
+          title: 'Working with Node.js Modules and Packages',
+          videoUrl: 'https://example.com/nodejs-modules-packages',
+          duration: '15 minutes'
+        },
+        order: 2
+      }
+    ]
+  }
+];
+
+const pythonLessons: Module[] = [
+  {
+    id: 'module-1',
+    title: 'Python Fundamentals',
+    description: 'Learn the basics of Python',
+    duration: '1 hour',
+    order: 1,
+    lessons: [
+      {
+        id: 'lesson-1',
+        title: 'Introduction to Python',
+        duration: '15 minutes',
+        content: {
+          type: 'text',
+          title: 'Python Basics',
+          text: 'Learn about Python variables and data types',
+          duration: '15 minutes'
+        },
+        order: 1
+      },
+      {
+        id: 'lesson-2',
+        title: 'Python Functions',
+        duration: '15 minutes',
+        content: {
+          type: 'video',
+          title: 'Working with Python Functions',
+          videoUrl: 'https://example.com/python-functions',
+          duration: '15 minutes'
+        },
+        order: 2
+      }
+    ]
+  }
+];
+
+const dbLessons: Module[] = [
+  {
+    id: 'module-1',
+    title: 'Database Fundamentals',
+    description: 'Learn the basics of databases',
+    duration: '1 hour',
+    order: 1,
+    lessons: [
+      {
+        id: 'lesson-1',
+        title: 'Introduction to Databases',
+        duration: '15 minutes',
+        content: {
+          type: 'text',
+          title: 'Database Basics',
+          text: 'Learn about database concepts and terminology',
+          duration: '15 minutes'
+        },
+        order: 1
+      },
+      {
+        id: 'lesson-2',
+        title: 'Database Design',
+        duration: '15 minutes',
+        content: {
+          type: 'video',
+          title: 'Working with Database Design',
+          videoUrl: 'https://example.com/database-design',
+          duration: '15 minutes'
+        },
+        order: 2
+      }
+    ]
+  }
+];
 
 const coursesData: { [key: string]: Course } = {
   'html-basics': {
-    ...htmlCourseInfo,
     id: 'html-basics',
+    title: 'HTML Basics',
+    description: 'Learn the fundamentals of HTML',
+    duration: '2 hours',
+    instructor: {
+      id: 'instructor-1',
+      name: 'John Doe',
+      avatar: '/instructors/john-doe.jpg',
+      bio: 'Web Development Instructor',
+      expertise: ['HTML', 'CSS', 'JavaScript'],
+      rating: 4.8,
+      studentsTaught: 5000,
+      courses: ['html-basics', 'css-basics'],
+      totalStudents: 5000,
+      totalCourses: 2
+    },
+    syllabus: ['HTML Basics', 'HTML Elements', 'HTML Forms'],
+    curriculum: htmlLessons,
+    studentsEnrolled: 1000,
+    rating: 4.5,
+    level: 'Beginner',
+    price: 29.99,
+    prerequisites: ['Basic computer skills'],
     category: 'development',
-    features: [
-      "Interactive coding exercises",
-      "Real-world projects",
-      "HTML5 semantic markup",
-      "Form validation techniques",
-      "Accessibility best practices"
-    ],
-    curriculum: htmlLessons.map((lesson: { title: string; content: LessonContent[] }) => ({
-      title: lesson.title,
-      content: lesson.content.map((content: LessonContent) => ({
-        type: content.type,
-        text: content.text || 'Coding Exercise',
-        duration: '20-30 mins'
-      }))
-    }))
+    features: ['Lifetime access', 'Certificate'],
+    thumbnail: '/courses/html-basics.jpg',
+    language: 'English',
+    lastUpdated: '2024-01-15',
+    certificate: true,
+    tags: ['html', 'web development'],
+    slug: 'html-basics'
   },
   'css-basics': {
-    ...cssCourseInfo,
     id: 'css-basics',
+    title: 'CSS Basics',
+    description: 'Learn the fundamentals of CSS',
+    duration: '2 hours',
+    instructor: {
+      id: 'instructor-2',
+      name: 'Jane Smith',
+      avatar: '/instructors/jane-smith.jpg',
+      bio: 'CSS Expert',
+      expertise: ['CSS', 'Sass', 'Less'],
+      rating: 4.9,
+      studentsTaught: 4000,
+      courses: ['css-basics', 'advanced-css'],
+      totalStudents: 4000,
+      totalCourses: 2
+    },
+    syllabus: ['CSS Basics', 'CSS Box Model', 'CSS Flexbox'],
+    curriculum: cssLessons,
+    studentsEnrolled: 800,
+    rating: 4.6,
+    level: 'Beginner',
+    price: 29.99,
+    prerequisites: ['Basic HTML knowledge'],
     category: 'development',
-    features: [
-      "Interactive style challenges",
-      "Responsive design projects",
-      "CSS Grid/Flexbox layouts",
-      "Animation techniques",
-      "Browser compatibility guide"
-    ],
-    curriculum: cssLessons.map((lesson: { title: string; content: LessonContent[] }) => ({
-      title: lesson.title,
-      content: lesson.content.map((content: LessonContent) => ({
-        title: content.type === 'text' ? content.text! : 'Coding Exercise',
-        duration: '20-30 mins'
-      }))
-    }))
+    features: ['Lifetime access', 'Certificate'],
+    thumbnail: '/courses/css-basics.jpg',
+    language: 'English',
+    lastUpdated: '2024-01-15',
+    certificate: true,
+    tags: ['css', 'web development'],
+    slug: 'css-basics'
   },
   'git-basics': {
-    ...gitCourseInfo,
     id: 'git-basics',
+    title: 'Git Basics',
+    description: 'Learn version control with Git',
+    duration: '2 hours',
+    instructor: {
+      id: 'instructor-3',
+      name: 'Mike Johnson',
+      avatar: '/instructors/mike-johnson.jpg',
+      bio: 'Git Expert',
+      expertise: ['Git', 'GitHub', 'GitLab'],
+      rating: 4.7,
+      studentsTaught: 3000,
+      courses: ['git-basics', 'advanced-git'],
+      totalStudents: 3000,
+      totalCourses: 2
+    },
+    syllabus: ['Git Basics', 'Git Commands', 'Git Workflow'],
+    curriculum: gitLessons,
+    studentsEnrolled: 600,
+    rating: 4.4,
+    level: 'Beginner',
+    price: 29.99,
+    prerequisites: ['Basic command line knowledge'],
     category: 'development',
-    features: [
-      "Interactive coding exercises",
-      "Real-world projects",
-      "Version control best practices",
-      "GitHub integration guide",
-      "Troubleshooting common issues"
-    ],
-    curriculum: gitLessons.map((lesson: { title: string; content: LessonContent[] }) => ({
-      title: lesson.title,
-      content: lesson.content.map((content: LessonContent) => ({
-        title: content.type === 'text' ? content.text! : 'Coding Exercise',
-        duration: '20-30 mins'
-      }))
-    }))
+    features: ['Lifetime access', 'Certificate'],
+    thumbnail: '/courses/git-basics.jpg',
+    language: 'English',
+    lastUpdated: '2024-01-15',
+    certificate: true,
+    tags: ['git', 'version control'],
+    slug: 'git-basics'
   },
   'javascript-basics': {
-    ...jsCourseInfo,
     id: 'javascript-basics',
+    title: 'JavaScript Basics',
+    description: 'Learn the fundamentals of JavaScript',
+    duration: '2 hours',
+    instructor: {
+      id: 'instructor-4',
+      name: 'Emily Chen',
+      avatar: '/instructors/emily-chen.jpg',
+      bio: 'JavaScript Expert',
+      expertise: ['JavaScript', 'React', 'Angular'],
+      rating: 4.8,
+      studentsTaught: 5000,
+      courses: ['javascript-basics', 'advanced-javascript'],
+      totalStudents: 5000,
+      totalCourses: 2
+    },
+    syllabus: ['JavaScript Basics', 'JavaScript Functions', 'JavaScript Objects'],
+    curriculum: jsLessons,
+    studentsEnrolled: 1000,
+    rating: 4.5,
+    level: 'Beginner',
+    price: 29.99,
+    prerequisites: ['Basic HTML and CSS knowledge'],
     category: 'development',
-    features: [
-      "Interactive coding challenges",
-      "Real-world applications",
-      "ES6+ features",
-      "DOM manipulation",
-      "Async programming"
-    ],
-    curriculum: jsLessons.map((lesson) => ({
-      title: lesson.title,
-      content: lesson.content.map((content) => ({
-        type: content.type,
-        text: content.text || 'Coding Exercise',
-        duration: '20-30 mins'
-      }))
-    }))
+    features: ['Lifetime access', 'Certificate'],
+    thumbnail: '/courses/javascript-basics.jpg',
+    language: 'English',
+    lastUpdated: '2024-01-15',
+    certificate: true,
+    tags: ['javascript', 'web development'],
+    slug: 'javascript-basics'
   },
   'react-fundamentals': {
-    ...reactCourseInfo,
     id: 'react-fundamentals',
+    title: 'React Fundamentals',
+    description: 'Learn the fundamentals of React',
+    duration: '2 hours',
+    instructor: {
+      id: 'instructor-5',
+      name: 'David Lee',
+      avatar: '/instructors/david-lee.jpg',
+      bio: 'React Expert',
+      expertise: ['React', 'Redux', 'React Router'],
+      rating: 4.9,
+      studentsTaught: 4000,
+      courses: ['react-fundamentals', 'advanced-react'],
+      totalStudents: 4000,
+      totalCourses: 2
+    },
+    syllabus: ['React Basics', 'React Components', 'React State and Props'],
+    curriculum: reactLessons,
+    studentsEnrolled: 800,
+    rating: 4.6,
+    level: 'Beginner',
+    price: 29.99,
+    prerequisites: ['JavaScript fundamentals', 'ES6+ features'],
     category: 'development',
-    features: [
-      "Component-based architecture",
-      "State management",
-      "Hooks system",
-      "React Router",
-      "Performance optimization"
-    ],
-    curriculum: reactLessons.map((lesson) => ({
-      title: lesson.title,
-      lessons: lesson.content.map((content) => ({
-        title: content.type === 'text' ? content.text! : 'Coding Exercise',
-        duration: '20-30 mins'
-      }))
-    }))
+    features: ['Lifetime access', 'Certificate'],
+    thumbnail: '/courses/react-fundamentals.jpg',
+    language: 'English',
+    lastUpdated: '2024-01-15',
+    certificate: true,
+    tags: ['react', 'web development'],
+    slug: 'react-fundamentals'
   },
-  'nodejs-essentials': {
-    ...nodeCourseInfo,
-    id: 'nodejs-essentials',
-    category: 'development',
-    features: [
-      "REST API development",
-      "Express framework",
-      "Database integration",
-      "Authentication",
-      "Deployment strategies"
-    ],
-    curriculum: nodeLessons.map((lesson) => ({
-      title: lesson.title,
-      lessons: lesson.content.map((content) => ({
-        title: content.type === 'text' ? content.text! : 'Coding Exercise',
-        duration: '20-30 mins'
-      }))
-    }))
-  },
+  'nodejs-essentials': nodeCourseInfo,
   'python-basics': {
-    ...pythonCourseInfo,
     id: 'python-basics',
+    title: 'Python Basics',
+    description: 'Learn the fundamentals of Python',
+    duration: '2 hours',
+    instructor: {
+      id: 'instructor-6',
+      name: 'Sophia Patel',
+      avatar: '/instructors/sophia-patel.jpg',
+      bio: 'Python Expert',
+      expertise: ['Python', 'Data Science', 'Machine Learning'],
+      rating: 4.8,
+      studentsTaught: 5000,
+      courses: ['python-basics', 'advanced-python'],
+      totalStudents: 5000,
+      totalCourses: 2
+    },
+    syllabus: ['Python Basics', 'Python Functions', 'Python Objects'],
+    curriculum: pythonLessons,
+    studentsEnrolled: 1000,
+    rating: 4.5,
+    level: 'Beginner',
+    price: 29.99,
+    prerequisites: ['Basic programming concepts'],
     category: 'development',
-    features: [
-      "Python syntax fundamentals",
-      "Data structures",
-      "File handling",
-      "OOP concepts",
-      "Error handling"
-    ],
-    curriculum: pythonLessons.map((lesson) => ({
-      title: lesson.title,
-      lessons: lesson.content.map((content) => ({
-        title: content.type === 'text' ? content.text! : 'Coding Exercise',
-        duration: '20-30 mins'
-      }))
-    }))
+    features: ['Lifetime access', 'Certificate'],
+    thumbnail: '/courses/python-basics.jpg',
+    language: 'English',
+    lastUpdated: '2024-01-15',
+    certificate: true,
+    tags: ['python', 'programming'],
+    slug: 'python-basics'
   },
   'database-fundamentals': {
-    ...dbCourseInfo,
     id: 'database-fundamentals',
+    title: 'Database Fundamentals',
+    description: 'Learn the basics of databases',
+    duration: '2 hours',
+    instructor: {
+      id: 'instructor-7',
+      name: 'Kevin White',
+      avatar: '/instructors/kevin-white.jpg',
+      bio: 'Database Expert',
+      expertise: ['Databases', 'SQL', 'NoSQL'],
+      rating: 4.9,
+      studentsTaught: 4000,
+      courses: ['database-fundamentals', 'advanced-databases'],
+      totalStudents: 4000,
+      totalCourses: 2
+    },
+    syllabus: ['Database Basics', 'Database Design', 'Database Querying'],
+    curriculum: dbLessons,
+    studentsEnrolled: 800,
+    rating: 4.6,
+    level: 'Beginner',
+    price: 29.99,
+    prerequisites: ['Basic computer skills', 'Logic fundamentals'],
     category: 'development',
-    features: [
-      "SQL queries",
-      "Database design",
-      "Normalization",
-      "NoSQL concepts",
-      "MongoDB basics"
-    ],
-    curriculum: dbLessons.map((lesson) => ({
-      title: lesson.title,
-      lessons: lesson.content.map((content) => ({
-        title: content.type === 'text' ? content.text! : 'Coding Exercise',
-        duration: '20-30 mins'
-      }))
-    }))
+    features: ['Lifetime access', 'Certificate'],
+    thumbnail: '/courses/database-fundamentals.jpg',
+    language: 'English',
+    lastUpdated: '2024-01-15',
+    certificate: true,
+    tags: ['databases', 'data storage'],
+    slug: 'database-fundamentals'
   }
 };
 
-export default function CoursePage() {
-  const params = useParams();
-  const [course, setCourse] = useState<Course | null>(null);
-  const [activeSection, setActiveSection] = useState(0);
+export default function CoursePage({
+  params
+}: {
+  params: { category: string; slug: string };
+}) {
   const [isLearning, setIsLearning] = useState(false);
-
-  useEffect(() => {
-    const courseData = coursesData[params.slug as string];
-    setCourse(courseData);
-  }, [params.slug]);
+  const course = coursesData[params.slug];
 
   if (!course) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
-      </div>
-    );
+    return <div>Course not found</div>;
   }
 
   if (isLearning) {
@@ -245,107 +552,126 @@ export default function CoursePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-16">
-      {/* Course Header */}
-      <div className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 py-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">{course.title}</h1>
-          <p className="text-lg text-gray-600 mb-6">{course.description}</p>
-          
-          <div className="flex flex-wrap items-center gap-6 text-sm text-gray-500">
-            {course.rating && (
-              <div className="flex items-center gap-1">
-                <FaStar className="text-yellow-400" />
-                <span>{course.rating.toFixed(1)}</span>
-              </div>
-            )}
-            <div className="flex items-center gap-1">
-              <FaUsers />
-              <span>{course.studentsEnrolled?.toLocaleString()} students</span>
-            </div>
-            {course.duration && (
-              <div className="flex items-center gap-1">
-                <FaClock />
-                <span>{course.duration}</span>
-              </div>
-            )}
-            {course.level && (
-              <div className="px-2 py-1 bg-green-100 text-green-800 rounded-full text-sm">
-                {course.level}
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
+    <div className="container mx-auto px-4 py-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {/* Course Info */}
+        <div className="md:col-span-2">
+          <h1 className="text-3xl font-bold mb-4">{course.title}</h1>
+          <p className="text-gray-600 mb-4">{course.description}</p>
 
-      {/* Course Content */}
-      <div className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Main Content */}
-        <div className="lg:col-span-2">
-          {/* Course Features */}
-          <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
+          <div className="bg-white rounded-lg shadow-md p-6 mb-6">
             <h2 className="text-xl font-semibold mb-4">What You'll Learn</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {course.features?.map((feature, index) => (
-                <div key={index} className="flex items-center gap-3">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
-                    {index === 0 && <FaBook className="text-green-600" />}
-                    {index === 1 && <FaHandsHelping className="text-green-600" />}
-                    {index === 2 && <FaPuzzlePiece className="text-green-600" />}
-                    {index === 3 && <FaClipboardCheck className="text-green-600" />}
-                    {index === 4 && <FaTrophy className="text-green-600" />}
-                  </div>
-                  <span className="text-gray-700">{feature}</span>
-                </div>
+            <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {course.syllabus?.map((item, index) => (
+                <li key={index} className="flex items-start">
+                  <svg
+                    className="w-5 h-5 text-green-500 mr-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  {typeof item === 'string' ? item : item.title}
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
 
-          {/* Curriculum */}
-          <div className="bg-white rounded-lg shadow-sm p-6">
-            <h2 className="text-xl font-semibold mb-4">Course Curriculum</h2>
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <h2 className="text-xl font-semibold mb-4">Course Content</h2>
             <div className="space-y-4">
               {course.curriculum?.map((section, index) => (
-                <div key={index} className="border rounded-lg">
-                  <button
-                    onClick={() => setActiveSection(activeSection === index ? -1 : index)}
-                    className="w-full p-4 bg-gray-50 border-b flex items-center justify-between hover:bg-gray-100 transition-colors"
-                  >
-                    <h3 className="font-medium">{section.title}</h3>
+                <div key={index} className="border rounded-lg p-4">
+                  <div className="flex justify-between items-center mb-2">
+                    <h3 className="text-lg font-medium">{section.title}</h3>
                     <span className="text-sm text-gray-500">
                       {section.lessons.length} lessons
                     </span>
-                  </button>
-                  <div className={`divide-y ${activeSection === index ? 'block' : 'hidden'}`}>
-                    {section.lessons.map((lesson, lessonIndex) => (
-                      <div key={lessonIndex} className="p-4 flex items-center justify-between hover:bg-gray-50">
-                        <span>{lesson.title}</span>
-                        <span className="text-sm text-gray-500">{lesson.duration}</span>
-                      </div>
-                    ))}
                   </div>
+                  <ul className="space-y-2">
+                    {section.lessons.map((lesson, lessonIndex) => (
+                      <li
+                        key={lessonIndex}
+                        className="flex justify-between items-center text-sm text-gray-600"
+                      >
+                        <span>{lesson.title}</span>
+                        <span>{lesson.duration}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Sidebar */}
-        <div className="lg:col-span-1">
-          <div className="bg-white rounded-lg shadow-sm p-6 sticky top-24">
-            <div className="text-center">
-              <div className="text-3xl font-bold mb-4">
-                {course.price === 0 ? 'Free' : `$${course.price}`}
+        {/* Course Sidebar */}
+        <div className="md:col-span-1">
+          <div className="bg-white rounded-lg shadow-md p-6 sticky top-4">
+            <div className="text-center mb-6">
+              <span className="text-3xl font-bold">${course.price}</span>
+            </div>
+            <button
+              onClick={() => setIsLearning(true)}
+              className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+            >
+              Start Learning
+            </button>
+            <div className="mt-6 space-y-4">
+              <div className="flex items-center">
+                <svg
+                  className="w-5 h-5 text-gray-400 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <span>{course.duration} of content</span>
               </div>
-              <button 
-                onClick={() => setIsLearning(true)}
-                className="w-full bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
-              >
-                Start Learning
-              </button>
-              <p className="mt-4 text-sm text-gray-500">
-                30-day money back guarantee
-              </p>
+              <div className="flex items-center">
+                <svg
+                  className="w-5 h-5 text-gray-400 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 14l-7 7m0 0l-7-7m7 7V3"
+                  />
+                </svg>
+                <span>Full lifetime access</span>
+              </div>
+              <div className="flex items-center">
+                <svg
+                  className="w-5 h-5 text-gray-400 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <span>Certificate of completion</span>
+              </div>
             </div>
           </div>
         </div>

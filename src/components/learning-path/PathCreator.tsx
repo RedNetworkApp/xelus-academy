@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { PathGeneratorOptions, Skill } from '@/types/learning-path';
+import { PathGeneratorOptions, LearningPreferences, TimeCommitment } from '@/types/learning-path';
 import { PathGenerator } from '@/lib/learning-path/PathGenerator';
 
 const LEARNING_STYLES = [
@@ -57,6 +57,9 @@ export default function PathCreator() {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [options, setOptions] = useState<Partial<PathGeneratorOptions>>({
+    careerGoal: '',
+    currentSkills: [],
+    skillLevels: {},
     preferences: {
       learningStyle: 'visual',
       difficulty: 'beginner',
@@ -73,8 +76,30 @@ export default function PathCreator() {
   const handleSubmit = async () => {
     setIsLoading(true);
     try {
+      // Ensure career goal is provided
+      if (!options.careerGoal) {
+        throw new Error("Career goal is required");
+      }
+      
+      // Create a complete PathGeneratorOptions object
+      const completeOptions: PathGeneratorOptions = {
+        careerGoal: options.careerGoal || '',
+        currentSkills: options.currentSkills || [],
+        skillLevels: options.skillLevels || {},
+        timeCommitment: {
+          hoursPerWeek: options.timeCommitment?.hoursPerWeek || 10,
+          totalWeeks: options.timeCommitment?.totalWeeks || 12,
+        },
+        preferences: {
+          learningStyle: options.preferences?.learningStyle || 'visual',
+          difficulty: options.preferences?.difficulty || 'beginner',
+          focusAreas: options.preferences?.focusAreas || [],
+          excludedTopics: options.preferences?.excludedTopics || [],
+        }
+      };
+      
       const generator = PathGenerator.getInstance();
-      const path = await generator.generatePath('user123', options as PathGeneratorOptions);
+      const path = await generator.generatePath('user123', completeOptions);
       router.push(`/learning-path/${path.id}`);
     } catch (error) {
       console.error('Failed to generate path:', error);
@@ -148,15 +173,19 @@ export default function PathCreator() {
                       ? 'border-blue-500 bg-blue-50'
                       : 'border-gray-200 hover:border-gray-300'
                   }`}
-                  onClick={() =>
+                  onClick={() => {
+                    // Ensure we have a complete preferences object
+                    const updatedPreferences: LearningPreferences = {
+                      learningStyle: style.id as 'visual' | 'auditory' | 'reading' | 'kinesthetic',
+                      difficulty: options.preferences?.difficulty || 'beginner',
+                      focusAreas: options.preferences?.focusAreas || [],
+                      excludedTopics: options.preferences?.excludedTopics || []
+                    };
                     setOptions({
                       ...options,
-                      preferences: {
-                        ...options.preferences,
-                        learningStyle: style.id as any,
-                      },
-                    })
-                  }
+                      preferences: updatedPreferences
+                    });
+                  }}
                 >
                   <div className="text-2xl mb-2">{style.icon}</div>
                   <h3 className="font-medium text-gray-900">{style.title}</h3>
@@ -186,6 +215,7 @@ export default function PathCreator() {
                       timeCommitment: {
                         ...options.timeCommitment,
                         hoursPerWeek: parseInt(e.target.value),
+                        totalWeeks: options.timeCommitment?.totalWeeks || 12,
                       },
                     })
                   }
@@ -207,6 +237,7 @@ export default function PathCreator() {
                       ...options,
                       timeCommitment: {
                         ...options.timeCommitment,
+                        hoursPerWeek: options.timeCommitment?.hoursPerWeek || 10,
                         totalWeeks: parseInt(e.target.value),
                       },
                     })
@@ -235,15 +266,19 @@ export default function PathCreator() {
                       ? 'border-blue-500 bg-blue-50'
                       : 'border-gray-200 hover:border-gray-300'
                   }`}
-                  onClick={() =>
+                  onClick={() => {
+                    // Ensure we have a complete preferences object
+                    const updatedPreferences: LearningPreferences = {
+                      learningStyle: options.preferences?.learningStyle || 'visual',
+                      difficulty: level.id as 'beginner' | 'intermediate' | 'advanced',
+                      focusAreas: options.preferences?.focusAreas || [],
+                      excludedTopics: options.preferences?.excludedTopics || []
+                    };
                     setOptions({
                       ...options,
-                      preferences: {
-                        ...options.preferences,
-                        difficulty: level.id as any,
-                      },
-                    })
-                  }
+                      preferences: updatedPreferences
+                    });
+                  }}
                 >
                   <div className="text-2xl mb-2">{level.icon}</div>
                   <h3 className="font-medium text-gray-900">{level.title}</h3>

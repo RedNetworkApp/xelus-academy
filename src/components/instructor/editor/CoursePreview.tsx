@@ -96,7 +96,7 @@ export default function CoursePreview({ data, onBack, onNext }: Props) {
               </div>
               
               <div className="divide-y">
-                {module.lessons.map((lesson, lessonIndex) => (
+                {module.lessons?.map((lesson, lessonIndex) => (
                   <div
                     key={lessonIndex}
                     className="p-4 flex items-center justify-between hover:bg-gray-50"
@@ -155,7 +155,7 @@ export default function CoursePreview({ data, onBack, onNext }: Props) {
                       
                       <span>{lesson.title}</span>
                       
-                      {lesson.isPreview && (
+                      {'isPreview' in lesson && lesson.isPreview && (
                         <span className="px-2 py-0.5 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
                           Preview
                         </span>
@@ -165,7 +165,7 @@ export default function CoursePreview({ data, onBack, onNext }: Props) {
                       {lesson.duration}
                     </span>
                   </div>
-                ))}
+                )) || []}
               </div>
             </div>
           ))}

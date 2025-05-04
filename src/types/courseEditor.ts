@@ -1,6 +1,25 @@
 import { Course, Module, Lesson } from './course';
+import { MilestoneTemplate } from './learning-path';
 
-export type CourseFormData = Omit<Course, 'id' | 'instructor' | 'rating' | 'studentsEnrolled'>;
+export interface CourseFormData {
+  title: string;
+  description: string;
+  level: 'Beginner' | 'Intermediate' | 'Advanced';
+  price: number;
+  duration: string;
+  prerequisites: string[];
+  syllabus: (MilestoneTemplate | ModuleFormData)[];
+  category: string;
+  features: string[];
+  thumbnail: string;
+  language?: string;
+  lastUpdated?: string;
+  certificate?: boolean;
+  tags?: string[];
+  slug?: string;
+  objectives: string[];
+  curriculum?: Module[];
+}
 
 export interface LessonContent {
   type: 'video' | 'text' | 'quiz' | 'assignment';
@@ -28,8 +47,20 @@ export interface AssignmentDetails {
   dueDate?: string;
 }
 
-export interface ModuleFormData extends Omit<Module, 'id'> {
-  lessons: (Omit<Lesson, 'id'> & { content: LessonContent })[];
+export interface LessonFormData {
+  title: string;
+  duration: string;
+  content: LessonContent;
+  isPreview?: boolean;
+  order?: number;
+  type?: string;
+  id?: string;
+  videoUrl?: string;
+  quizQuestions?: any[];
+}
+
+export interface ModuleFormData extends Omit<Module, 'id' | 'lessons'> {
+  lessons: LessonFormData[];
 }
 
 export interface CourseValidationError {

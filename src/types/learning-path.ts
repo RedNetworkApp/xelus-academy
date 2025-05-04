@@ -27,33 +27,66 @@ export interface Skill {
 
 export interface LearningPath {
   id: string;
-  userId: string;
   title: string;
   description: string;
-  careerGoal: CareerGoal;
   milestones: Milestone[];
+  preferences: LearningPreferences;
+  timeCommitment: TimeCommitment;
   totalDuration: string;
-  difficulty: 'beginner' | 'intermediate' | 'advanced';
-  status: 'draft' | 'active' | 'completed' | 'archived';
-  progress: number;
-  createdAt: string;
-  updatedAt: string;
+  progress?: number;
 }
 
 export interface Milestone {
   id: string;
   title: string;
   description: string;
-  order: number;
-  skills: Skill[];
-  courses: PathCourse[];
-  projects: Project[];
-  assessments: Assessment[];
+  courseId: string;
   duration: string;
-  status: 'locked' | 'unlocked' | 'in_progress' | 'completed';
+  order: number;
+  status: 'not-started' | 'in-progress' | 'completed' | 'locked';
   progress: number;
-  prerequisites: string[]; // Milestone IDs
-  nextMilestones: string[]; // Milestone IDs
+  prerequisites?: string[];
+  courses?: PathCourse[];
+  projects?: Project[];
+  assessments?: Assessment[];
+}
+
+export interface LearningPreferences {
+  learningStyle: 'visual' | 'auditory' | 'reading' | 'kinesthetic';
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  focusAreas: string[];
+  excludedTopics: string[];
+}
+
+export interface TimeCommitment {
+  hoursPerWeek: number;
+  totalWeeks: number;
+}
+
+export interface MilestoneTemplate extends Omit<Milestone, 'status' | 'progress'> {
+  courses?: PathCourse[];
+  projects?: Project[];
+  assessments?: Assessment[];
+  prerequisites?: string[];
+  lessons?: {
+    id: string;
+    title: string;
+    duration: string;
+    type?: string;
+    videoUrl?: string;
+    quizQuestions?: any[];
+    content?: any;
+  }[];
+}
+
+export interface PathTemplate {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  milestones: MilestoneTemplate[];
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  duration: string;
 }
 
 export interface PathCourse {
@@ -109,7 +142,7 @@ export interface LearningPathTemplate {
   difficulty: 'beginner' | 'intermediate' | 'advanced';
   estimatedDuration: string;
   prerequisites: Skill[];
-  milestones: Omit<Milestone, 'status' | 'progress'>[];
+  milestones: MilestoneTemplate[];
   popularity: number;
   rating: number;
   totalStudents: number;

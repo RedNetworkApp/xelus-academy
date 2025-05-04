@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { FaWandSparkles, FaPalette, FaCode, FaLightbulb, FaCheck } from 'react-icons/fa';
+import { FaHandSparkles, FaPalette, FaCode, FaLightbulb, FaCheck } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import CodeEditor from '@/components/courses/CodeEditor';
 import CourseCompletion from '@/components/courses/CourseCompletion';

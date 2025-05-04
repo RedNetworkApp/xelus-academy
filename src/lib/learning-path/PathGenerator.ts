@@ -4,6 +4,7 @@ import {
   CareerGoal,
   Skill,
   Milestone,
+  MilestoneTemplate,
   PathCourse,
   Project,
   Assessment,
@@ -32,17 +33,13 @@ export class PathGenerator {
 
     return {
       id: this.generateId(),
-      userId,
       title: `Path to ${careerGoal.title}`,
       description: `Personalized learning path for becoming a ${careerGoal.title}`,
-      careerGoal,
-      milestones: customizedPath.milestones,
-      totalDuration: this.calculateTotalDuration(customizedPath.milestones),
-      difficulty: options.preferences.difficulty,
-      status: 'draft',
-      progress: 0,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      milestones: customizedPath.milestones as Milestone[],
+      preferences: options.preferences,
+      timeCommitment: options.timeCommitment,
+      totalDuration: this.calculateTotalDuration(customizedPath.milestones as Milestone[]),
+      progress: 0
     };
   }
 
@@ -109,20 +106,26 @@ export class PathGenerator {
   }
 
   private async customizeMilestones(
-    milestones: Omit<Milestone, 'status' | 'progress'>[],
+    milestones: MilestoneTemplate[],
     options: PathGeneratorOptions
   ): Promise<Milestone[]> {
     const customizedMilestones: Milestone[] = [];
 
     for (const milestone of milestones) {
       const customizedMilestone: Milestone = {
-        ...milestone,
-        status: 'locked',
+        id: milestone.id || this.generateId(),
+        title: milestone.title,
+        description: milestone.description,
+        courseId: milestone.courseId,
+        duration: milestone.duration,
+        order: milestone.order,
+        status: 'not-started',
         progress: 0,
-        courses: await this.customizeCourses(milestone.courses, options),
-        projects: await this.customizeProjects(milestone.projects, options),
+        prerequisites: milestone.prerequisites || [],
+        courses: await this.customizeCourses(milestone.courses || [], options),
+        projects: await this.customizeProjects(milestone.projects || [], options),
         assessments: await this.customizeAssessments(
-          milestone.assessments,
+          milestone.assessments || [],
           options
         ),
       };
@@ -172,8 +175,8 @@ export class PathGenerator {
     // Sort milestones based on prerequisites and user's current skills
     return milestones.sort((a, b) => {
       // If a is a prerequisite of b, a should come first
-      if (b.prerequisites.includes(a.id)) return -1;
-      if (a.prerequisites.includes(b.id)) return 1;
+      if (b.prerequisites?.includes(a.id)) return -1;
+      if (a.prerequisites?.includes(b.id)) return 1;
 
       // If user has completed prerequisites for one milestone but not the other,
       // prioritize the one with completed prerequisites
@@ -190,9 +193,9 @@ export class PathGenerator {
     milestone: Milestone,
     currentSkills: string[]
   ): boolean {
-    return milestone.prerequisites.every((prereq) =>
+    return milestone.prerequisites?.every((prereq) =>
       currentSkills.includes(prereq)
-    );
+    ) || false;
   }
 
   private calculateTotalDuration(milestones: Milestone[]): string {

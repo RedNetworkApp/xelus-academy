@@ -16,11 +16,26 @@ interface Props {
 }
 
 export default function EarningsChart({ earnings }: Props) {
+  if (!earnings) {
+    return <div className="h-80 flex items-center justify-center">No earnings data available</div>;
+  }
+  
   return (
     <div className="h-80">
-      <ResponsiveContainer width="100%" height="100%">
+      <div className="grid grid-cols-2 gap-4 mb-4">
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <p className="text-sm text-gray-600">Total Earnings</p>
+          <p className="text-xl font-semibold">${earnings.total.toLocaleString()}</p>
+        </div>
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <p className="text-sm text-gray-600">Projected Next Month</p>
+          <p className="text-xl font-semibold">${earnings.projected.toLocaleString()}</p>
+        </div>
+      </div>
+      
+      <ResponsiveContainer width="100%" height="70%">
         <LineChart
-          data={earnings}
+          data={earnings.monthly}
           margin={{
             top: 5,
             right: 30,
@@ -30,40 +45,22 @@ export default function EarningsChart({ earnings }: Props) {
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis
-            dataKey="period"
+            dataKey="month"
             tick={{ fontSize: 12 }}
           />
           <YAxis
-            yAxisId="left"
             tick={{ fontSize: 12 }}
             tickFormatter={(value) => `$${value}`}
           />
-          <YAxis
-            yAxisId="right"
-            orientation="right"
-            tick={{ fontSize: 12 }}
-            tickFormatter={(value) => `${value} students`}
-          />
           <Tooltip
-            formatter={(value: number, name: string) => {
-              if (name === 'amount') return [`$${value}`, 'Revenue'];
-              return [`${value} students`, 'New Students'];
-            }}
+            formatter={(value: number) => [`$${value.toLocaleString()}`, 'Revenue']}
           />
           <Line
-            yAxisId="left"
             type="monotone"
             dataKey="amount"
             stroke="#2563eb"
             activeDot={{ r: 8 }}
             name="amount"
-          />
-          <Line
-            yAxisId="right"
-            type="monotone"
-            dataKey="students"
-            stroke="#10b981"
-            name="students"
           />
         </LineChart>
       </ResponsiveContainer>

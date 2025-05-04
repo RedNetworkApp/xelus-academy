@@ -3,9 +3,11 @@ import { Course } from './course';
 export interface CourseProgress {
   courseId: string;
   progress: number; // Percentage completed
-  lastAccessed: string; // ISO date string
+  lastAccessDate: string; // ISO date string
   completedLessons: string[]; // Array of lesson IDs
   currentLesson: string; // Current lesson ID
+  userId: string;
+  startDate: string;
   certificate?: {
     id: string;
     issueDate: string;

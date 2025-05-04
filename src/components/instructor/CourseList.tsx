@@ -61,7 +61,7 @@ function CourseCard({ course, status }: CourseCardProps) {
     <div className="bg-white rounded-lg shadow-sm overflow-hidden">
       <div className="relative h-40">
         <Image
-          src={course.thumbnail}
+          src={course.thumbnail || '/images/courses/default-course.jpg'}
           alt={course.title}
           fill
           className="object-cover"

@@ -40,7 +40,8 @@ const categories = [
         },
         rating: 4.8,
         studentsEnrolled: 1500,
-        price: 0
+        price: 0,
+        prerequisites: ['Basic computer skills']
       },
       {
         id: 'css-basics',
@@ -56,7 +57,8 @@ const categories = [
         },
         rating: 4.7,
         studentsEnrolled: 1200,
-        price: 0
+        price: 0,
+        prerequisites: ['Basic HTML knowledge']
       },
       {
         id: 'javascript-basics',
@@ -72,7 +74,8 @@ const categories = [
         },
         rating: 4.8,
         studentsEnrolled: 1800,
-        price: 0
+        price: 0,
+        prerequisites: ['Basic HTML and CSS knowledge']
       },
       {
         id: 'react-fundamentals',
@@ -88,7 +91,8 @@ const categories = [
         },
         rating: 4.9,
         studentsEnrolled: 2200,
-        price: 0
+        price: 0,
+        prerequisites: ['JavaScript fundamentals', 'ES6+ features']
       },
       {
         id: 'nodejs-essentials',
@@ -104,7 +108,8 @@ const categories = [
         },
         rating: 4.7,
         studentsEnrolled: 1500,
-        price: 0
+        price: 0,
+        prerequisites: ['JavaScript fundamentals', 'Basic backend concepts']
       },
       {
         id: 'python-basics',
@@ -120,7 +125,8 @@ const categories = [
         },
         rating: 4.8,
         studentsEnrolled: 2000,
-        price: 0
+        price: 0,
+        prerequisites: ['Basic programming concepts']
       },
       {
         id: 'database-fundamentals',
@@ -136,7 +142,8 @@ const categories = [
         },
         rating: 4.6,
         studentsEnrolled: 1200,
-        price: 0
+        price: 0,
+        prerequisites: ['Basic computer skills', 'Logic fundamentals']
       },
       {
         id: 'git-basics',
@@ -152,7 +159,8 @@ const categories = [
         },
         rating: 4.8,
         studentsEnrolled: 1800,
-        price: 0
+        price: 0,
+        prerequisites: ['Basic command line knowledge']
       },
       {
         id: 'python-intro',
@@ -168,7 +176,8 @@ const categories = [
         },
         rating: 4.9,
         studentsEnrolled: 2200,
-        price: 0
+        price: 0,
+        prerequisites: ['Basic programming concepts']
       },
       {
         id: 'javascript-basics',
@@ -184,7 +193,8 @@ const categories = [
         },
         rating: 4.8,
         studentsEnrolled: 1800,
-        price: 0
+        price: 0,
+        prerequisites: ['Basic HTML and CSS knowledge']
       },
       {
         id: 'responsive-design',
@@ -200,7 +210,8 @@ const categories = [
         },
         rating: 4.7,
         studentsEnrolled: 1500,
-        price: 0
+        price: 0,
+        prerequisites: ['HTML and CSS fundamentals']
       }
     ]
   },
@@ -226,7 +237,8 @@ const categories = [
         },
         rating: 4.8,
         students: 800,
-        price: 29.99
+        price: 29.99,
+        prerequisites: ['Basic gardening knowledge']
       },
       {
         id: 'organic-gardening',
@@ -245,7 +257,8 @@ const categories = [
         },
         rating: 4.6,
         students: 600,
-        price: 24.99
+        price: 24.99,
+        prerequisites: ['Basic gardening knowledge']
       }
     ]
   },
@@ -271,7 +284,8 @@ const categories = [
         },
         rating: 4.7,
         students: 500,
-        price: 39.99
+        price: 39.99,
+        prerequisites: ['Basic electronics knowledge']
       },
       {
         id: 'iphone-repair',
@@ -290,7 +304,8 @@ const categories = [
         },
         rating: 4.9,
         students: 700,
-        price: 49.99
+        price: 49.99,
+        prerequisites: ['Basic smartphone repair knowledge', 'iOS familiarity']
       }
     ]
   },
@@ -316,7 +331,8 @@ const categories = [
         },
         rating: 4.8,
         students: 1200,
-        price: 59.99
+        price: 59.99,
+        prerequisites: ['Basic business concepts']
       },
       {
         id: 'digital-marketing',
@@ -335,7 +351,8 @@ const categories = [
         },
         rating: 4.7,
         students: 900,
-        price: 44.99
+        price: 44.99,
+        prerequisites: ['Basic marketing concepts', 'Social media familiarity']
       }
     ]
   },
@@ -361,7 +378,8 @@ const categories = [
         },
         rating: 4.6,
         students: 600,
-        price: 34.99
+        price: 34.99,
+        prerequisites: ['Basic computer skills', 'Familiarity with digital media']
       },
       {
         id: 'social-media-content',
@@ -380,7 +398,8 @@ const categories = [
         },
         rating: 4.8,
         students: 800,
-        price: 29.99
+        price: 29.99,
+        prerequisites: ['Social media experience', 'Basic photography skills']
       }
     ]
   },
@@ -406,7 +425,8 @@ const categories = [
         },
         rating: 4.9,
         students: 1000,
-        price: 49.99
+        price: 49.99,
+        prerequisites: ['Basic design principles', 'Some visual design experience']
       },
       {
         id: 'graphic-design',
@@ -425,7 +445,8 @@ const categories = [
         },
         rating: 4.7,
         students: 850,
-        price: 39.99
+        price: 39.99,
+        prerequisites: ['Basic computer skills', 'Visual creativity']
       }
     ]
   }

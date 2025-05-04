@@ -97,7 +97,15 @@ export default function CourseBasicInfo({ data, onChange, onNext }: Props) {
           <select
             id="level"
             value={data.level}
-            onChange={(e) => onChange({ level: e.target.value })}
+            onChange={(e) => {
+              // Ensure value is one of the allowed enum values
+              const value = e.target.value;
+              const validValue = 
+                value === 'Beginner' || value === 'Intermediate' || value === 'Advanced'
+                ? value as 'Beginner' | 'Intermediate' | 'Advanced'
+                : 'Beginner';
+              onChange({ level: validValue });
+            }}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           >
             <option value="Beginner">Beginner</option>

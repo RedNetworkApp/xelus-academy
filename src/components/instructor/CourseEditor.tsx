@@ -57,15 +57,15 @@ export default function CourseEditor({ initialData, mode }: Props) {
       hasPrice: courseData.price > 0,
       hasModules: courseData.syllabus.length > 0,
       minimumLessons: courseData.syllabus.reduce(
-        (total, module) => total + module.lessons.length,
+        (total, module) => total + (module.lessons?.length || 0),
         0
       ) >= 3,
       allLessonsHaveContent: courseData.syllabus.every((module) =>
-        module.lessons.every((lesson) => {
-          if (lesson.type === 'video') return lesson.videoUrl?.length > 0;
-          if (lesson.type === 'quiz') return lesson.quizQuestions?.length > 0;
+        module.lessons?.every((lesson) => {
+          if (lesson.type === 'video') return lesson.videoUrl && lesson.videoUrl.length > 0;
+          if (lesson.type === 'quiz') return lesson.quizQuestions && lesson.quizQuestions.length > 0;
           return true;
-        })
+        }) ?? true
       ),
     };
   };

@@ -1,7 +1,13 @@
+export interface CoursePerformanceData {
+  date: string;
+  enrollments: number;
+  completions: number;
+  revenue: number;
+}
+
 export interface AnalyticsPeriod {
   start: string;
   end: string;
-  duration: 'day' | 'week' | 'month' | 'year';
 }
 
 export interface UserEngagement {
@@ -24,35 +30,11 @@ export interface LearningMetrics {
   coursesCompleted: number;
 }
 
-export interface CoursePerformance {
-  courseId: string;
-  title: string;
-  metrics: {
-    enrollments: number;
-    completions: number;
-    averageRating: number;
-    totalRevenue: number;
-    averageCompletionTime: number;
-    dropoffRate: number;
-  };
-  trends: {
-    date: string;
-    enrollments: number;
-    completions: number;
-    revenue: number;
-  }[];
-}
-
 export interface CategoryPerformance {
-  categoryId: string;
-  name: string;
-  metrics: {
-    totalCourses: number;
-    totalEnrollments: number;
-    totalRevenue: number;
-    averageRating: number;
-    popularTopics: string[];
-  };
+  category: string;
+  enrollments: number;
+  revenue: number;
+  avgRating: number;
 }
 
 export interface RevenueMetrics {
@@ -120,14 +102,41 @@ export interface PlatformMetrics {
   };
 }
 
+export interface StudentAnalytics {
+  totalStudents: number;
+  activeStudents: number;
+  completionRate: number;
+  satisfactionScore: number;
+}
+
+export interface InstructorAnalytics {
+  totalInstructors: number;
+  activeInstructors: number;
+  avgCourseRating: number;
+  totalEarnings: number;
+}
+
+export interface PlatformHealth {
+  uptime: number;
+  responseTime: number;
+  errorRate: number;
+  activeUsers: number;
+}
+
 export interface AnalyticsDashboardData {
-  period: AnalyticsPeriod;
-  userEngagement: UserEngagement;
-  learningMetrics: LearningMetrics;
-  coursePerformance: CoursePerformance[];
+  period: {
+    start: string;
+    end: string;
+  };
+  overview: {
+    totalRevenue: number;
+    totalStudents: number;
+    activeStudents: number;
+    coursesCompleted: number;
+  };
+  coursePerformance: CoursePerformanceData[];
   categoryPerformance: CategoryPerformance[];
-  revenueMetrics: RevenueMetrics;
-  studentMetrics: StudentMetrics;
-  instructorMetrics: InstructorMetrics;
-  platformMetrics: PlatformMetrics;
+  studentAnalytics: StudentAnalytics;
+  instructorAnalytics: InstructorAnalytics;
+  platformHealth: PlatformHealth;
 }

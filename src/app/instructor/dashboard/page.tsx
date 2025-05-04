@@ -1,5 +1,35 @@
 import { Metadata } from 'next';
 import { InstructorDashboardData } from '@/types/instructor';
+
+interface Analytics {
+  courseId: string;
+  courseName: string;
+  enrollments: number;
+  revenue: number;
+  rating: number;
+  completionRate: number;
+  studentEngagement?: number;
+  slug?: string;
+}
+
+// Interface for course data in dashboard
+interface DashboardCourse {
+  id: string;
+  title: string;
+  students: number;
+  rating: number;
+  revenue: number;
+  lastUpdated: string;
+  slug?: string;
+}
+
+// Interface for draft course data
+interface DraftCourse {
+  id: string;
+  title: string;
+  completionPercentage: number;
+  lastEdited: string;
+}
 import InstructorStats from '@/components/instructor/InstructorStats';
 import CourseAnalytics from '@/components/instructor/CourseAnalytics';
 import CourseList from '@/components/instructor/CourseList';
@@ -57,6 +87,9 @@ const getInstructorDashboard = async (): Promise<InstructorDashboardData> => {
         objectives: ['Learn HTML', 'Master CSS'],
         syllabus: [],
         rating: 4.7,
+        students: 1200,
+        revenue: 59880,
+        lastUpdated: '2025-01-10T15:30:00Z',
         studentsEnrolled: 1200
       }
     ],
@@ -72,18 +105,39 @@ const getInstructorDashboard = async (): Promise<InstructorDashboardData> => {
         date: '2025-01-12T15:30:00Z'
       }
     ],
-    earnings: [
-      {
-        period: 'Jan 2025',
-        amount: 2500,
-        students: 250
-      }
-    ]
+    earnings: {
+      monthly: [
+        {
+          month: 'Jan 2025',
+          amount: 2500
+        },
+        {
+          month: 'Feb 2025',
+          amount: 3200
+        },
+        {
+          month: 'Mar 2025',
+          amount: 2800
+        },
+        {
+          month: 'Apr 2025',
+          amount: 3500
+        }
+      ],
+      total: 12000,
+      projected: 4000
+    }
   };
 };
 
 export default async function InstructorDashboardPage() {
   const dashboardData = await getInstructorDashboard();
+  
+  // Provide default empty arrays for undefined properties
+  const courseAnalytics = dashboardData.courseAnalytics || [];
+  const publishedCourses = dashboardData.publishedCourses || [];
+  const draftCourses = dashboardData.draftCourses || [];
+  const recentReviews = dashboardData.recentReviews || [];
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -99,13 +153,13 @@ export default async function InstructorDashboardPage() {
         </div>
 
         {/* Stats Overview */}
-        <InstructorStats stats={dashboardData.stats} />
+        <InstructorStats stats={dashboardData.stats!} />
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
           {/* Course Analytics */}
           <div className="bg-white rounded-lg shadow-sm p-6">
             <h2 className="text-xl font-bold mb-4">Course Analytics</h2>
-            <CourseAnalytics analytics={dashboardData.courseAnalytics} />
+            <CourseAnalytics analytics={courseAnalytics as any} />
           </div>
 
           {/* Earnings Chart */}
@@ -119,15 +173,15 @@ export default async function InstructorDashboardPage() {
         <div className="mt-8">
           <h2 className="text-xl font-bold mb-4">Your Courses</h2>
           <CourseList
-            publishedCourses={dashboardData.publishedCourses}
-            draftCourses={dashboardData.draftCourses}
+            publishedCourses={publishedCourses as any}
+            draftCourses={draftCourses as any}
           />
         </div>
 
         {/* Recent Reviews */}
         <div className="mt-8">
           <h2 className="text-xl font-bold mb-4">Recent Reviews</h2>
-          <RecentReviews reviews={dashboardData.recentReviews} />
+          <RecentReviews reviews={recentReviews} />
         </div>
       </div>
     </div>

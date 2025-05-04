@@ -1,218 +1,130 @@
 import { Metadata } from 'next';
 import { AnalyticsDashboardData } from '@/types/analytics';
-import EngagementMetrics from '@/components/analytics/EngagementMetrics';
-import LearningOverview from '@/components/analytics/LearningOverview';
-import CoursePerformance from '@/components/analytics/CoursePerformance';
+import DateRangePicker from '@/components/analytics/DateRangePicker';
+import CoursePerformance from '@/components/instructor/metrics/CoursePerformance';
 import CategoryInsights from '@/components/analytics/CategoryInsights';
-import RevenueAnalytics from '@/components/analytics/RevenueAnalytics';
 import StudentAnalytics from '@/components/analytics/StudentAnalytics';
 import InstructorAnalytics from '@/components/analytics/InstructorAnalytics';
 import PlatformHealth from '@/components/analytics/PlatformHealth';
-import DateRangePicker from '@/components/analytics/DateRangePicker';
 
 export const metadata: Metadata = {
-  title: 'Analytics Dashboard - Xelus Academy',
-  description: 'Comprehensive analytics and insights for Xelus Academy.',
+  title: 'Admin Analytics - Xelus Academy',
+  description: 'Comprehensive analytics dashboard for platform administrators.',
 };
 
-// This would typically come from an API
-const getAnalyticsData = async (
-  startDate: string,
-  endDate: string
-): Promise<AnalyticsDashboardData> => {
-  return {
-    period: {
-      start: startDate,
-      end: endDate,
-      duration: 'month',
+// Mock data for demonstration
+const mockData: AnalyticsDashboardData = {
+  period: {
+    start: '2024-01-01',
+    end: '2024-01-31',
+  },
+  overview: {
+    totalRevenue: 55000,
+    totalStudents: 2500,
+    activeStudents: 1800,
+    coursesCompleted: 580,
+  },
+  coursePerformance: [
+    {
+      date: '2024-01-01',
+      enrollments: 150,
+      completions: 75,
+      revenue: 7500,
     },
-    userEngagement: {
-      activeUsers: {
-        daily: 1200,
-        weekly: 5000,
-        monthly: 15000,
-      },
-      averageSessionDuration: 3600,
-      bounceRate: 25,
-      retentionRate: 75,
+    {
+      date: '2024-01-08',
+      enrollments: 180,
+      completions: 90,
+      revenue: 9000,
     },
-    learningMetrics: {
-      totalLearningTime: 360000,
-      averageCompletionRate: 68,
-      averageQuizScore: 82,
-      certificatesEarned: 450,
-      coursesStarted: 850,
-      coursesCompleted: 580,
+    {
+      date: '2024-01-15',
+      enrollments: 220,
+      completions: 110,
+      revenue: 11000,
     },
-    coursePerformance: [
-      {
-        courseId: '1',
-        title: 'Web Development Fundamentals',
-        metrics: {
-          enrollments: 500,
-          completions: 350,
-          averageRating: 4.8,
-          totalRevenue: 24999.99,
-          averageCompletionTime: 86400,
-          dropoffRate: 15,
-        },
-        trends: [
-          {
-            date: '2025-01-01',
-            enrollments: 50,
-            completions: 35,
-            revenue: 2499.99,
-          },
-          // More trend data...
-        ],
-      },
-      // More courses...
-    ],
-    categoryPerformance: [
-      {
-        categoryId: '1',
-        name: 'Development',
-        metrics: {
-          totalCourses: 150,
-          totalEnrollments: 7500,
-          totalRevenue: 374999.99,
-          averageRating: 4.6,
-          popularTopics: ['Web Development', 'JavaScript', 'React'],
-        },
-      },
-      // More categories...
-    ],
-    revenueMetrics: {
-      totalRevenue: 999999.99,
-      recurringRevenue: 749999.99,
-      averageOrderValue: 79.99,
-      refundRate: 3,
-      revenueByCategory: [
-        {
-          categoryId: '1',
-          name: 'Development',
-          revenue: 374999.99,
-          percentage: 37.5,
-        },
-        // More categories...
-      ],
-      trends: [
-        {
-          date: '2025-01-01',
-          revenue: 32258.06,
-          orders: 403,
-          refunds: 12,
-        },
-        // More trend data...
-      ],
+    {
+      date: '2024-01-22',
+      enrollments: 250,
+      completions: 125,
+      revenue: 12500,
     },
-    studentMetrics: {
-      totalStudents: 25000,
-      activeStudents: 18750,
-      studentsByLevel: [
-        {
-          level: 'Beginner',
-          count: 10000,
-          percentage: 40,
-        },
-        // More levels...
-      ],
-      studentsByCountry: [
-        {
-          country: 'United States',
-          count: 7500,
-          percentage: 30,
-        },
-        // More countries...
-      ],
-      acquisitionChannels: [
-        {
-          channel: 'Organic Search',
-          count: 8750,
-          percentage: 35,
-        },
-        // More channels...
-      ],
+    {
+      date: '2024-01-29',
+      enrollments: 300,
+      completions: 150,
+      revenue: 15000,
     },
-    instructorMetrics: {
-      totalInstructors: 250,
-      activeInstructors: 200,
-      topInstructors: [
-        {
-          instructorId: '1',
-          name: 'John Doe',
-          totalStudents: 5000,
-          totalCourses: 12,
-          averageRating: 4.9,
-          totalRevenue: 249999.99,
-        },
-        // More instructors...
-      ],
+  ],
+  categoryPerformance: [
+    {
+      category: 'Development',
+      enrollments: 500,
+      revenue: 25000,
+      avgRating: 4.5,
     },
-    platformMetrics: {
-      totalCourses: 500,
-      totalCategories: 20,
-      totalLessons: 5000,
-      totalQuizzes: 2500,
-      totalAssignments: 1500,
-      systemHealth: {
-        uptime: 99.99,
-        responseTime: 250,
-        errorRate: 0.01,
-      },
+    {
+      category: 'Farming',
+      enrollments: 300,
+      revenue: 15000,
+      avgRating: 4.7,
     },
-  };
+    {
+      category: 'Mobile Repair',
+      enrollments: 200,
+      revenue: 10000,
+      avgRating: 4.3,
+    },
+  ],
+  studentAnalytics: {
+    totalStudents: 2500,
+    activeStudents: 1800,
+    completionRate: 72,
+    satisfactionScore: 4.6,
+  },
+  instructorAnalytics: {
+    totalInstructors: 50,
+    activeInstructors: 45,
+    avgCourseRating: 4.5,
+    totalEarnings: 150000,
+  },
+  platformHealth: {
+    uptime: 99.9,
+    responseTime: 250,
+    errorRate: 0.1,
+    activeUsers: 500,
+  },
 };
 
-export default async function AnalyticsDashboardPage() {
-  const startDate = '2025-01-01';
-  const endDate = '2025-01-31';
-  const data = await getAnalyticsData(startDate, endDate);
+export default function AdminAnalyticsPage() {
+  const data = mockData;
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="container mx-auto px-4">
-        {/* Header */}
-        <div className="mb-8 flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">
-              Analytics Dashboard
-            </h1>
-            <p className="mt-2 text-gray-600">
-              Comprehensive insights and performance metrics
-            </p>
-          </div>
+    <div className="container mx-auto px-4 py-8">
+      <div className="mb-8">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold">Platform Analytics</h1>
           <DateRangePicker
             startDate={data.period.start}
             endDate={data.period.end}
           />
         </div>
+        
+        {/* Platform Overview */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
+          <PlatformHealth data={data.platformHealth} />
+        </div>
 
-        {/* Dashboard Grid */}
-        <div className="space-y-8">
-          {/* Engagement & Learning */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <EngagementMetrics data={data.userEngagement} />
-            <LearningOverview data={data.learningMetrics} />
-          </div>
+        {/* Course & Category Performance */}
+        <div className="grid grid-cols-1 gap-8">
+          <CoursePerformance data={data.coursePerformance} />
+          <CategoryInsights data={data.categoryPerformance} />
+        </div>
 
-          {/* Course & Category Performance */}
-          <div className="grid grid-cols-1 gap-8">
-            <CoursePerformance data={data.coursePerformance} />
-            <CategoryInsights data={data.categoryPerformance} />
-          </div>
-
-          {/* Revenue & Students */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <RevenueAnalytics data={data.revenueMetrics} />
-            <StudentAnalytics data={data.studentMetrics} />
-          </div>
-
-          {/* Instructors & Platform Health */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <InstructorAnalytics data={data.instructorMetrics} />
-            <PlatformHealth data={data.platformMetrics} />
-          </div>
+        {/* User Analytics */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+          <StudentAnalytics data={data.studentAnalytics} />
+          <InstructorAnalytics data={data.instructorAnalytics} />
         </div>
       </div>
     </div>

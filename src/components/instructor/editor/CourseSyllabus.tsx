@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { CourseFormData, ModuleFormData } from '@/types/courseEditor';
-import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import { CourseFormData, ModuleFormData, LessonFormData } from '@/types/courseEditor';
+import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 
 interface Props {
   data: CourseFormData;
@@ -35,7 +35,8 @@ export default function CourseSyllabus({
 
   const updateModule = (index: number, moduleData: Partial<ModuleFormData>) => {
     const updatedSyllabus = [...data.syllabus];
-    updatedSyllabus[index] = { ...updatedSyllabus[index], ...moduleData };
+    const currentModule = updatedSyllabus[index] as ModuleFormData;
+    updatedSyllabus[index] = { ...currentModule, ...moduleData };
     onChange({ syllabus: updatedSyllabus });
   };
 
@@ -47,9 +48,13 @@ export default function CourseSyllabus({
 
   const addLesson = (moduleIndex: number) => {
     const updatedSyllabus = [...data.syllabus];
-    const module = updatedSyllabus[moduleIndex];
+    const module = updatedSyllabus[moduleIndex] as ModuleFormData;
     
-    module.lessons.push({
+    if (!module.lessons) {
+      module.lessons = [];
+    }
+    
+    const newLesson: LessonFormData = {
       title: `Lesson ${module.lessons.length + 1}`,
       duration: '',
       type: 'video',
@@ -58,34 +63,40 @@ export default function CourseSyllabus({
         type: 'video',
         videoUrl: '',
       },
-    });
+    };
     
+    module.lessons.push(newLesson);
     onChange({ syllabus: updatedSyllabus });
   };
 
   const updateLesson = (
     moduleIndex: number,
     lessonIndex: number,
-    lessonData: any
+    lessonData: Partial<LessonFormData>
   ) => {
     const updatedSyllabus = [...data.syllabus];
-    const module = updatedSyllabus[moduleIndex];
-    module.lessons[lessonIndex] = {
-      ...module.lessons[lessonIndex],
-      ...lessonData,
-    };
-    onChange({ syllabus: updatedSyllabus });
+    const module = updatedSyllabus[moduleIndex] as ModuleFormData;
+    
+    if (module.lessons && module.lessons[lessonIndex]) {
+      module.lessons[lessonIndex] = {
+        ...module.lessons[lessonIndex],
+        ...lessonData,
+      };
+      onChange({ syllabus: updatedSyllabus });
+    }
   };
 
   const removeLesson = (moduleIndex: number, lessonIndex: number) => {
     const updatedSyllabus = [...data.syllabus];
-    updatedSyllabus[moduleIndex].lessons = updatedSyllabus[
-      moduleIndex
-    ].lessons.filter((_, i) => i !== lessonIndex);
-    onChange({ syllabus: updatedSyllabus });
+    const module = updatedSyllabus[moduleIndex] as ModuleFormData;
+    
+    if (module.lessons) {
+      module.lessons = module.lessons.filter((_, i) => i !== lessonIndex);
+      onChange({ syllabus: updatedSyllabus });
+    }
   };
 
-  const handleDragEnd = (result: any) => {
+  const handleDragEnd = (result: DropResult) => {
     if (!result.destination) return;
 
     const updatedSyllabus = [...data.syllabus];
@@ -124,26 +135,29 @@ export default function CourseSyllabus({
                       draggableId={`module-${index}`}
                       index={index}
                     >
-                      {(provided) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          className={`p-4 rounded-md cursor-pointer ${
-                            selectedModuleIndex === index
-                              ? 'bg-blue-50 border-2 border-blue-500'
-                              : 'bg-white border border-gray-200 hover:border-blue-500'
-                          }`}
-                          onClick={() => setSelectedModuleIndex(index)}
-                        >
-                          <div className="flex items-center justify-between">
-                            <span className="font-medium">{module.title}</span>
-                            <span className="text-sm text-gray-500">
-                              {module.lessons.length} lessons
-                            </span>
+                      {(provided) => {
+                        const moduleData = module as ModuleFormData;
+                        return (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            className={`p-4 rounded-md cursor-pointer ${
+                              selectedModuleIndex === index
+                                ? 'bg-blue-50 border-2 border-blue-500'
+                                : 'bg-white border border-gray-200 hover:border-blue-500'
+                            }`}
+                            onClick={() => setSelectedModuleIndex(index)}
+                          >
+                            <div className="flex items-center justify-between">
+                              <span className="font-medium">{moduleData.title}</span>
+                              <span className="text-sm text-gray-500">
+                                {moduleData.lessons?.length || 0} lessons
+                              </span>
+                            </div>
                           </div>
-                        </div>
-                      )}
+                        );
+                      }}
                     </Draggable>
                   ))}
                   {provided.placeholder}
@@ -159,152 +173,159 @@ export default function CourseSyllabus({
             <div className="bg-white p-6 rounded-lg border border-gray-200">
               <div className="space-y-6">
                 {/* Module Title and Duration */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Module Title
-                    </label>
-                    <input
-                      type="text"
-                      value={data.syllabus[selectedModuleIndex].title}
-                      onChange={(e) =>
-                        updateModule(selectedModuleIndex, { title: e.target.value })
-                      }
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Duration
-                    </label>
-                    <input
-                      type="text"
-                      value={data.syllabus[selectedModuleIndex].duration}
-                      onChange={(e) =>
-                        updateModule(selectedModuleIndex, {
-                          duration: e.target.value,
-                        })
-                      }
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                      placeholder="e.g., 2 hours"
-                    />
-                  </div>
-                </div>
-
-                {/* Lessons */}
-                <div>
-                  <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-lg font-medium">Lessons</h3>
-                    <button
-                      onClick={() => addLesson(selectedModuleIndex)}
-                      className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
-                    >
-                      Add Lesson
-                    </button>
-                  </div>
-
-                  <div className="space-y-4">
-                    {data.syllabus[selectedModuleIndex].lessons.map(
-                      (lesson, lessonIndex) => (
-                        <div
-                          key={lessonIndex}
-                          className="p-4 border rounded-md space-y-4"
-                        >
-                          <div className="grid grid-cols-2 gap-4">
-                            <div>
-                              <label className="block text-sm font-medium text-gray-700">
-                                Lesson Title
-                              </label>
-                              <input
-                                type="text"
-                                value={lesson.title}
-                                onChange={(e) =>
-                                  updateLesson(selectedModuleIndex, lessonIndex, {
-                                    title: e.target.value,
-                                  })
-                                }
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                              />
-                            </div>
-                            <div>
-                              <label className="block text-sm font-medium text-gray-700">
-                                Duration
-                              </label>
-                              <input
-                                type="text"
-                                value={lesson.duration}
-                                onChange={(e) =>
-                                  updateLesson(selectedModuleIndex, lessonIndex, {
-                                    duration: e.target.value,
-                                  })
-                                }
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                placeholder="e.g., 30 minutes"
-                              />
-                            </div>
-                          </div>
-
-                          <div className="grid grid-cols-2 gap-4">
-                            <div>
-                              <label className="block text-sm font-medium text-gray-700">
-                                Lesson Type
-                              </label>
-                              <select
-                                value={lesson.type}
-                                onChange={(e) =>
-                                  updateLesson(selectedModuleIndex, lessonIndex, {
-                                    type: e.target.value,
-                                    content: { type: e.target.value },
-                                  })
-                                }
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                              >
-                                <option value="video">Video</option>
-                                <option value="quiz">Quiz</option>
-                                <option value="assignment">Assignment</option>
-                              </select>
-                            </div>
-                            <div className="flex items-center space-x-2 pt-6">
-                              <input
-                                type="checkbox"
-                                id={`preview-${lessonIndex}`}
-                                checked={lesson.isPreview}
-                                onChange={(e) =>
-                                  updateLesson(selectedModuleIndex, lessonIndex, {
-                                    isPreview: e.target.checked,
-                                  })
-                                }
-                                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                              />
-                              <label
-                                htmlFor={`preview-${lessonIndex}`}
-                                className="text-sm text-gray-700"
-                              >
-                                Available as Preview
-                              </label>
-                            </div>
-                          </div>
-
-                          <button
-                            onClick={() =>
-                              removeLesson(selectedModuleIndex, lessonIndex)
+                {(() => {
+                  const moduleData = data.syllabus[selectedModuleIndex] as ModuleFormData;
+                  return (
+                    <>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700">
+                            Module Title
+                          </label>
+                          <input
+                            type="text"
+                            value={moduleData.title}
+                            onChange={(e) =>
+                              updateModule(selectedModuleIndex, { title: e.target.value })
                             }
-                            className="text-red-600 hover:text-red-700 text-sm"
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700">
+                            Duration
+                          </label>
+                          <input
+                            type="text"
+                            value={moduleData.duration}
+                            onChange={(e) =>
+                              updateModule(selectedModuleIndex, {
+                                duration: e.target.value,
+                              })
+                            }
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                            placeholder="e.g., 2 hours"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Lessons */}
+                      <div>
+                        <div className="flex justify-between items-center mb-4">
+                          <h3 className="text-lg font-medium">Lessons</h3>
+                          <button
+                            onClick={() => addLesson(selectedModuleIndex)}
+                            className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
                           >
-                            Remove Lesson
+                            Add Lesson
                           </button>
                         </div>
-                      )
-                    )}
-                  </div>
-                </div>
 
-                <button
-                  onClick={() => removeModule(selectedModuleIndex)}
-                  className="text-red-600 hover:text-red-700"
-                >
-                  Delete Module
-                </button>
+                        <div className="space-y-4">
+                          {moduleData.lessons?.map(
+                            (lesson, lessonIndex) => (
+                              <div
+                                key={lessonIndex}
+                                className="p-4 border rounded-md space-y-4"
+                              >
+                                <div className="grid grid-cols-2 gap-4">
+                                  <div>
+                                    <label className="block text-sm font-medium text-gray-700">
+                                      Lesson Title
+                                    </label>
+                                    <input
+                                      type="text"
+                                      value={lesson.title}
+                                      onChange={(e) =>
+                                        updateLesson(selectedModuleIndex, lessonIndex, {
+                                          title: e.target.value,
+                                        })
+                                      }
+                                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                    />
+                                  </div>
+                                  <div>
+                                    <label className="block text-sm font-medium text-gray-700">
+                                      Duration
+                                    </label>
+                                    <input
+                                      type="text"
+                                      value={lesson.duration}
+                                      onChange={(e) =>
+                                        updateLesson(selectedModuleIndex, lessonIndex, {
+                                          duration: e.target.value,
+                                        })
+                                      }
+                                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                      placeholder="e.g., 30 minutes"
+                                    />
+                                  </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4">
+                                  <div>
+                                    <label className="block text-sm font-medium text-gray-700">
+                                      Lesson Type
+                                    </label>
+                                    <select
+                                      value={lesson.type}
+                                      onChange={(e) =>
+                                        updateLesson(selectedModuleIndex, lessonIndex, {
+                                          type: e.target.value,
+                                          content: { ...lesson.content, type: e.target.value as any },
+                                        })
+                                      }
+                                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                    >
+                                      <option value="video">Video</option>
+                                      <option value="quiz">Quiz</option>
+                                      <option value="assignment">Assignment</option>
+                                    </select>
+                                  </div>
+                                  <div className="flex items-center space-x-2 pt-6">
+                                    <input
+                                      type="checkbox"
+                                      id={`preview-${lessonIndex}`}
+                                      checked={lesson.isPreview}
+                                      onChange={(e) =>
+                                        updateLesson(selectedModuleIndex, lessonIndex, {
+                                          isPreview: e.target.checked,
+                                        })
+                                      }
+                                      className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                    />
+                                    <label
+                                      htmlFor={`preview-${lessonIndex}`}
+                                      className="text-sm text-gray-700"
+                                    >
+                                      Available as Preview
+                                    </label>
+                                  </div>
+                                </div>
+
+                                <button
+                                  onClick={() =>
+                                    removeLesson(selectedModuleIndex, lessonIndex)
+                                  }
+                                  className="text-red-600 hover:text-red-700 text-sm"
+                                >
+                                  Remove Lesson
+                                </button>
+                              </div>
+                            )
+                          )}
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={() => removeModule(selectedModuleIndex)}
+                        className="text-red-600 hover:text-red-700"
+                      >
+                        Delete Module
+                      </button>
+                    </>
+                  );
+                })()}
               </div>
             </div>
           )}

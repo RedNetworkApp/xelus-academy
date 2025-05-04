@@ -1,16 +1,3 @@
-export interface InstructorDashboardData {
-  overview: InstructorOverview;
-  courseMetrics: CourseMetrics[];
-  studentMetrics: StudentMetrics;
-  engagementMetrics: EngagementMetrics;
-  revenueMetrics: RevenueMetrics;
-  feedbackMetrics: FeedbackMetrics;
-  period: {
-    start: string;
-    end: string;
-  };
-}
-
 export interface InstructorOverview {
   totalStudents: number;
   totalCourses: number;
@@ -23,8 +10,58 @@ export interface InstructorOverview {
     date: string;
     students: number;
     revenue: number;
-    rating: number;
+    rating: number | string;
   }[];
+}
+
+export interface StudentAnalytics {
+  enrollments?: {
+    date: string;
+    count: number;
+  }[];
+  completions?: {
+    date: string;
+    count: number;
+  }[];
+  demographics?: {
+    ageGroups?: {
+      label: string;
+      value: number;
+    }[];
+    locations?: {
+      country: string;
+      count: number;
+    }[];
+  };
+  totalStudents?: number;
+  activeStudents?: number;
+  completionRate?: number;
+  satisfactionScore?: number;
+}
+
+export interface InstructorAnalytics {
+  courseMetrics: CourseMetrics;
+  studentMetrics: StudentMetrics;
+  engagementMetrics: EngagementMetrics;
+  revenueMetrics: RevenueMetrics;
+  feedbackMetrics: FeedbackMetrics;
+}
+
+export interface CoursePerformanceData {
+  date: string;
+  enrollments: number;
+  completions: number;
+  revenue: number;
+}
+
+export interface InstructorDashboardData {
+  overview: InstructorOverview;
+  studentMetrics: StudentMetrics;
+  engagementMetrics: EngagementMetrics;
+  revenueMetrics: RevenueMetrics;
+  feedbackMetrics: FeedbackMetrics;
+  courseMetrics: CourseMetrics[];
+  period: { start: string; end: string };
 }
 
 export interface CourseMetrics {
@@ -54,19 +91,18 @@ export interface CourseMetrics {
       notStarted: number;
       inProgress: number;
       completed: number;
-    };
+    }
   };
   trends: {
     date: string;
-    enrollments: number;
-    completions: number;
+    students: number;
     revenue: number;
-    rating: number;
+    rating: number | string;
   }[];
 }
 
 export interface StudentMetrics {
-  demographics: {
+  demographics?: {
     countries: {
       country: string;
       count: number;
@@ -83,7 +119,7 @@ export interface StudentMetrics {
       percentage: number;
     }[];
   };
-  behavior: {
+  behavior?: {
     timeOfDay: {
       hour: number;
       count: number;
@@ -100,7 +136,7 @@ export interface StudentMetrics {
       percentage: number;
     }[];
   };
-  retention: {
+  retention?: {
     overall: number;
     byWeek: {
       week: number;
@@ -111,22 +147,30 @@ export interface StudentMetrics {
       rate: number;
     }[];
   };
+  totalStudents?: number;
+  activeStudents?: number;
+  completionRate?: number;
+  satisfactionScore?: number;
 }
 
 export interface EngagementMetrics {
-  overall: {
+  overall?: {
     averageTimePerSession: number;
     averageSessionsPerWeek: number;
     averageCompletionTime: number;
     interactionRate: number;
   };
-  content: {
+  videoEngagement?: {
+    totalHoursWatched: number;
+    averageWatchTime: number;
+    completionRate: number;
     mostWatchedVideos: {
       videoId: string;
       title: string;
       views: number;
-      averageWatchTime: number;
+      averageWatchTime?: number;
       completionRate: number;
+      duration?: string;
     }[];
     mostAttemptedQuizzes: {
       quizId: string;
@@ -155,17 +199,53 @@ export interface EngagementMetrics {
       lastActivity: string;
     }[];
   };
+  averageWatchTime?: number;
+  averageCompletionTime?: number;
+  content?: {
+    mostWatchedVideos: {
+      videoId: string;
+      title: string;
+      views: number;
+      averageWatchTime: number;
+      completionRate: number;
+      duration?: string;
+    }[];
+    mostAttemptedQuizzes?: {
+      quizId: string;
+      title: string;
+      attempts: number;
+      averageScore: number;
+      passRate: number;
+    }[];
+    mostSubmittedAssignments?: {
+      assignmentId: string;
+      title: string;
+      submissions: number;
+      averageScore: number;
+      onTimeSubmissionRate: number;
+    }[];
+    popularSections?: {
+      title: string;
+      engagement: number;
+    }[];
+  };
 }
 
 export interface RevenueMetrics {
-  total: number;
+  total?: number;
+  totalRevenue?: number;
+  monthlyRevenue?: number;
+  averageOrderValue?: number;
+  projections: {
+    nextMonth: number;
+    nextQuarter: number;
+    nextYear?: number;
+  };
   byPeriod: {
     date: string;
     revenue: number;
-    enrollments: number;
-    refunds: number;
   }[];
-  byCourse: {
+  byCourse?: {
     courseId: string;
     title: string;
     revenue: number;
@@ -173,32 +253,32 @@ export interface RevenueMetrics {
     enrollments: number;
     averagePrice: number;
   }[];
-  byCountry: {
+  byCountry?: {
     country: string;
     revenue: number;
     percentage: number;
     enrollments: number;
   }[];
-  projections: {
-    nextMonth: number;
-    nextQuarter: number;
-    nextYear: number;
-  };
 }
 
 export interface FeedbackMetrics {
   overall: {
-    averageRating: number;
-    totalReviews: number;
-    sentimentScore: number;
     recommendationRate: number;
+    averageRating?: number;
+    totalReviews?: number;
+    sentimentScore?: number;
   };
   byRating: {
     rating: number;
     count: number;
     percentage: number;
   }[];
-  recentReviews: {
+  sentimentAnalysis?: {
+    positive: number;
+    neutral: number;
+    negative: number;
+  };
+  recentReviews?: {
     reviewId: string;
     courseId: string;
     courseName: string;
@@ -206,22 +286,31 @@ export interface FeedbackMetrics {
     comment: string;
     date: string;
     helpful: number;
-    response?: {
-      comment: string;
-      date: string;
-    };
   }[];
-  commonFeedback: {
+  commonFeedback?: {
     category: string;
-    sentiment: 'positive' | 'negative';
+    sentiment: string;
     count: number;
     percentage: number;
     keywords: string[];
   }[];
-  improvement: {
+  improvement?: {
     category: string;
     score: number;
-    trend: 'up' | 'down' | 'stable';
+    trend: string;
     suggestions: string[];
   }[];
+  averageRating?: number;
+  totalReviews?: number;
+}
+
+export interface InstructorStats {
+  totalStudents: number;
+  totalCourses: number;
+  totalRevenue: number;
+  averageRating: number;
+  totalReviews?: number;
+  activeStudents?: number;
+  completionRate?: number;
+  studentSatisfaction?: number;
 }

@@ -3,24 +3,7 @@
 import { useState } from 'react';
 import { FaCheck, FaLock, FaTrophy, FaArrowRight, FaArrowLeft } from 'react-icons/fa';
 
-interface Lesson {
-  title: string;
-  duration: string;
-  content?: string;
-}
-
-interface Section {
-  title: string;
-  lessons: Lesson[];
-}
-
-interface CourseLearningProps {
-  course: {
-    title: string;
-    curriculum: Section[];
-  };
-  onClose: () => void;
-}
+import { Course, CourseLearningProps, Module, Lesson } from '@/types/course';
 
 export default function CourseLearning({ course, onClose }: CourseLearningProps) {
   const [currentSection, setCurrentSection] = useState(0);
@@ -38,98 +21,103 @@ export default function CourseLearning({ course, onClose }: CourseLearningProps)
 
   const canAccess = (sectionIndex: number, lessonIndex: number) => {
     if (sectionIndex === 0 && lessonIndex === 0) return true;
-    if (lessonIndex === 0) return isCompleted(sectionIndex - 1, course.curriculum[sectionIndex - 1].lessons.length - 1);
+    if (lessonIndex === 0) {
+      if (!course.curriculum?.[sectionIndex - 1]?.lessons) return false;
+      return isCompleted(sectionIndex - 1, course.curriculum[sectionIndex - 1].lessons.length - 1);
+    }
     return isCompleted(sectionIndex, lessonIndex - 1);
   };
 
-  const currentLessonContent = {
-    'Getting Started with Sustainable Farming': {
-      content: `# Welcome to Sustainable Farming!
+  // Sample lesson content for demonstration
+  const currentLessonContent: Record<string, {content: string, quiz?: {question: string, options: string[], correct: number}[]}> = {
+    'Introduction to HTML': {
+      content: `# Welcome to HTML Basics!
 
-## What is Sustainable Farming?
+## What is HTML?
 
-Sustainable farming is an approach to food production that:
-- Maintains soil health
-- Conserves water
-- Supports biodiversity
-- Reduces environmental impact
+HTML (HyperText Markup Language) is the standard language for creating web pages:
+- Provides the structure of web pages
+- Uses elements to define content
+- Works with CSS and JavaScript to create modern web experiences
 
-## Key Principles:
-1. Soil Conservation
-2. Water Management
-3. Natural Pest Control
-4. Biodiversity
+## Key Concepts:
+1. HTML Elements
+2. Attributes
+3. Document Structure
+4. Semantic HTML
 
 ## Your First Activity:
-Take a look at your available space and answer these questions:
-1. How much sunlight does it get?
-2. What's the soil like?
-3. What's your water source?
+Create a simple HTML page with:
+1. A heading
+2. A paragraph
+3. An image
+4. A link
 
 ## Knowledge Check:
-- What are the three pillars of sustainability?
-- Why is soil health important?
-- How does biodiversity help farming?
+- What does HTML stand for?
+- What is the purpose of HTML?
+- How do HTML elements work?
 
 Make notes of your answers and observations. We'll use these in our next lesson!`,
       quiz: [
         {
-          question: "What is the main goal of sustainable farming?",
+          question: "What does HTML stand for?",
           options: [
-            "Maximum profit only",
-            "Balance between environment, profit, and community",
-            "Using only organic materials",
-            "Growing only vegetables"
+            "Hyper Transfer Markup Language",
+            "HyperText Markup Language",
+            "High-level Text Management Language",
+            "Hyperlink and Text Markup Language"
           ],
           correct: 1
         }
       ]
     },
-    'Test Your Soil Quality': {
-      content: `# Hands-on Soil Testing
+    'HTML Elements': {
+      content: `# Working with HTML Elements
 
-## Today's Activity: Basic Soil Assessment
+## Core HTML Elements
 
-### Materials Needed:
-- A jar with lid
-- Soil sample
-- Water
-- Trowel or spade
-- Timer
+### Essential Elements:
+- h1-h6: Headings
+- p: Paragraphs
+- a: Links
+- img: Images
+- ul/ol: Lists
+- div: Container
 
-### Steps:
-1. Collect soil sample (avoid wet soil)
-2. Fill jar 1/3 with soil
-3. Add water until nearly full
-4. Shake well
-5. Let it settle for 24 hours
+### Semantic Elements:
+- header: Page header
+- nav: Navigation
+- main: Main content
+- section: Content section
+- article: Independent content
+- footer: Page footer
 
-### What to Observe:
-- Sand settles first (bottom)
-- Silt settles second (middle)
-- Clay settles last (top)
+### Example Code:
+\`\`\`html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My First HTML Page</title>
+</head>
+<body>
+  <h1>Welcome to HTML</h1>
+  <p>This is a paragraph of text.</p>
+  <a href="https://example.com">Click here</a>
+</body>
+</html>
+\`\`\`
 
-### Record Your Results:
-- Take a photo or draw your jar
-- Measure each layer
-- Calculate percentages
-
-### Next Steps:
-Based on your results, we'll determine:
-- Soil type
-- Suitable crops
-- Required amendments
-
-Remember: Good soil is the foundation of sustainable farming!`
+Practice creating your own HTML document with various elements!`
     }
   };
 
   const goToNextLesson = () => {
     markComplete(currentSection, currentLesson);
-    const currentSectionLessons = course.curriculum[currentSection].lessons.length;
+    const currentSectionLessons = course.curriculum?.[currentSection]?.lessons.length || 0;
     if (currentLesson + 1 < currentSectionLessons) {
       setCurrentLesson(currentLesson + 1);
-    } else if (currentSection + 1 < course.curriculum.length) {
+    } else if (currentSection + 1 < (course.curriculum?.length || 0)) {
       setCurrentSection(currentSection + 1);
       setCurrentLesson(0);
     }
@@ -140,7 +128,7 @@ Remember: Good soil is the foundation of sustainable farming!`
       setCurrentLesson(currentLesson - 1);
     } else if (currentSection > 0) {
       setCurrentSection(currentSection - 1);
-      setCurrentLesson(course.curriculum[currentSection - 1].lessons.length - 1);
+      setCurrentLesson((course.curriculum?.[currentSection - 1]?.lessons.length || 1) - 1);
     }
   };
 
@@ -153,11 +141,11 @@ Remember: Good soil is the foundation of sustainable farming!`
           <p className="text-sm text-gray-500">Your Learning Progress</p>
         </div>
         <div className="p-4">
-          {course.curriculum.map((section, sectionIndex) => (
+          {course.curriculum?.map((module, sectionIndex) => (
             <div key={sectionIndex} className="mb-6">
-              <h3 className="font-medium mb-2">{section.title}</h3>
+              <h3 className="font-medium mb-2">{module.title}</h3>
               <div className="space-y-2">
-                {section.lessons.map((lesson, lessonIndex) => {
+                {module.lessons.map((lesson, lessonIndex) => {
                   const isActive = currentSection === sectionIndex && currentLesson === lessonIndex;
                   const completed = isCompleted(sectionIndex, lessonIndex);
                   const accessible = canAccess(sectionIndex, lessonIndex);
@@ -208,20 +196,20 @@ Remember: Good soil is the foundation of sustainable farming!`
             ← Back to Course
           </button>
           <div className="text-sm text-gray-500">
-            {currentSection + 1}/{course.curriculum.length} Sections
+            {currentSection + 1}/{course.curriculum?.length || 0} Modules
           </div>
         </div>
 
         <div className="flex-1 overflow-y-auto p-8">
           <div className="max-w-3xl mx-auto">
             <h1 className="text-2xl font-bold mb-6">
-              {course.curriculum[currentSection].lessons[currentLesson].title}
+              {course.curriculum?.[currentSection]?.lessons[currentLesson]?.title || "Lesson Title"}
             </h1>
             
             <div className="prose max-w-none">
-              {currentLessonContent[course.curriculum[currentSection].lessons[currentLesson].title]?.content ? (
+              {currentLessonContent[course.curriculum?.[currentSection]?.lessons[currentLesson]?.title || ""]?.content ? (
                 <div className="markdown-content">
-                  {currentLessonContent[course.curriculum[currentSection].lessons[currentLesson].title].content}
+                  {currentLessonContent[course.curriculum?.[currentSection]?.lessons[currentLesson]?.title || ""].content}
                 </div>
               ) : (
                 <div className="text-gray-500 italic">

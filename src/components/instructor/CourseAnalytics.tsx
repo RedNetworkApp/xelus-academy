@@ -1,10 +1,10 @@
-import { CourseAnalytics as Analytics } from '@/types/instructor';
+import { InstructorDashboardData } from '@/types/instructor';
 
 interface Props {
-  analytics: Analytics[];
+  analytics: InstructorDashboardData['courseAnalytics'];
 }
 
-export default function CourseAnalytics({ analytics }: Props) {
+export default function CourseAnalytics({ analytics = [] }: Props) {
   return (
     <div className="space-y-6">
       {analytics.map((course) => (

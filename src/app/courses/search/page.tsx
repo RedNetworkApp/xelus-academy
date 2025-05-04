@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { SearchResult, SearchFilters } from '@/types/search';
+import { SearchResult, SearchFilters, CourseLevel, CourseDuration } from '@/types/search';
 import SearchBar from '@/components/search/SearchBar';
 import SearchFiltersPanel from '@/components/search/SearchFiltersPanel';
 import SearchResults from '@/components/search/SearchResults';
@@ -87,35 +87,37 @@ const searchCourses = async (
   };
 };
 
-interface Props {
-  searchParams: {
-    q?: string;
-    category?: string;
-    level?: string;
-    price?: string;
-    duration?: string;
-    language?: string;
-    instructor?: string;
-    tag?: string;
-    page?: string;
-  };
+interface SearchParams {
+  q?: string;
+  category?: string;
+  level?: string;
+  price?: string;
+  duration?: string;
+  language?: string;
+  instructor?: string;
+  tag?: string;
+  page?: string;
 }
 
-export default async function SearchPage({ searchParams }: Props) {
+export default async function SearchPage({ 
+  searchParams 
+}: { 
+  searchParams: SearchParams
+}) {
   const query = searchParams.q || '';
   const page = parseInt(searchParams.page || '1');
 
   // Convert URL parameters to filters
   const filters: SearchFilters = {
     categories: searchParams.category ? [searchParams.category] : undefined,
-    levels: searchParams.level ? [searchParams.level as any] : undefined,
+    levels: searchParams.level ? [searchParams.level as CourseLevel] : undefined,
     priceRange: searchParams.price
       ? {
           min: 0,
           max: parseInt(searchParams.price.split('-')[1] || '1000'),
         }
       : undefined,
-    duration: searchParams.duration ? [searchParams.duration as any] : undefined,
+    duration: searchParams.duration ? [searchParams.duration as CourseDuration] : undefined,
     language: searchParams.language ? [searchParams.language] : undefined,
     instructors: searchParams.instructor ? [searchParams.instructor] : undefined,
     tags: searchParams.tag ? [searchParams.tag] : undefined,

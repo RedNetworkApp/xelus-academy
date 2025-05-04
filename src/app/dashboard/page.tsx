@@ -41,9 +41,11 @@ const getDashboardData = async (): Promise<StudentDashboardData> => {
         progress: {
           courseId: '1',
           progress: 45,
-          lastAccessed: '2025-01-13T10:30:00Z',
+          lastAccessDate: '2025-01-13T10:30:00Z',
           completedLessons: ['l1', 'l2'],
-          currentLesson: 'l3'
+          currentLesson: 'l3',
+          userId: 'u123',
+          startDate: '2025-01-01T09:00:00Z'
         }
       }
     ],

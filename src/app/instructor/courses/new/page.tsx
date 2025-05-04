@@ -17,7 +17,9 @@ const initialCourseData: CourseFormData = {
   level: 'Beginner',
   thumbnail: '',
   objectives: [],
-  syllabus: []
+  syllabus: [],
+  prerequisites: [],
+  features: []
 };
 
 export default function NewCoursePage() {

@@ -1,11 +1,11 @@
-import { InstructorDashboardData } from '@/types/instructor';
+import { Review } from '@/types/instructor';
 import Link from 'next/link';
 
 interface Props {
-  reviews: InstructorDashboardData['recentReviews'];
+  reviews: Review[] | undefined;
 }
 
-export default function RecentReviews({ reviews }: Props) {
+export default function RecentReviews({ reviews = [] }: Props) {
   return (
     <div className="bg-white rounded-lg shadow-sm divide-y">
       {reviews.map((review) => (

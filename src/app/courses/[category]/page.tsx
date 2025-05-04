@@ -56,6 +56,7 @@ const categories: Array<{id: string; name: string; icon: IconType; courses: Cour
         rating: 4.8,
         studentsEnrolled: 1500,
         price: 0,
+        prerequisites: ['Basic computer skills'],
         objectives: ['HTML5 Fundamentals', 'Semantic Elements', 'Forms & Validation', 'Best Practices'],
         slug: 'html-basics',
         category: 'development',
@@ -83,11 +84,11 @@ const categories: Array<{id: string; name: string; icon: IconType; courses: Cour
         rating: 4.7,
         studentsEnrolled: 1200,
         price: 0,
-        objectives: ['CSS3 Fundamentals', 'Flexbox', 'Grid Layout', 'Responsive Design'],
+        prerequisites: ['Basic HTML knowledge'],
+        objectives: ['CSS3 Fundamentals', 'Flexbox', 'Grid Layout', 'Responsive Design', 'Master CSS fundamentals', 'Learn responsive design'],
         slug: 'css-basics',
         category: 'development',
         thumbnail: '/images/courses/css-magic.jpg',
-        objectives: ['Master CSS fundamentals', 'Learn responsive design'],
         syllabus: [
           {
             id: 'week-1',
@@ -98,7 +99,11 @@ const categories: Array<{id: string; name: string; icon: IconType; courses: Cour
                 id: 'lesson-1',
                 title: 'Introduction to CSS',
                 duration: '45m',
-                type: 'text' as const
+                type: 'text' as const,
+                content: {
+                  type: 'text',
+                  text: 'Introduction to CSS'
+                }
               }
             ]
           }
@@ -126,14 +131,15 @@ const categories: Array<{id: string; name: string; icon: IconType; courses: Cour
         rating: 4.9,
         studentsEnrolled: 2000,
         price: 49.99,
+        prerequisites: ['Basic HTML and CSS knowledge'],
         topics: ['Variables & Data Types', 'Functions', 'DOM Manipulation', 'ES6+ Features'],
         slug: 'javascript-fundamentals',
         category: 'development',
         thumbnail: '/images/courses/js-basics.jpg',
         objectives: ['Understand core JS concepts', 'Learn modern ES6+ features'],
         syllabus: [
-          { week: 1, topic: 'Basic Syntax' },
-          { week: 2, topic: 'Functions and Scope' }
+          'Week 1: Basic Syntax',
+          'Week 2: Functions and Scope'
         ]
       }
     ]

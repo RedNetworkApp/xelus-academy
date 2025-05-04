@@ -1,11 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { Course } from '@/types/course';
+import { Course, Module, Lesson } from '@/types/course';
 import Link from 'next/link';
 
 interface Props {
-  course: Course;
+  course: Course & {
+    syllabus: Module[]; // Override syllabus to be Module[] instead of string[]
+  };
 }
 
 export default function CourseSidebar({ course }: Props) {

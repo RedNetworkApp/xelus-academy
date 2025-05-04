@@ -17,7 +17,7 @@ export default function EnrolledCourses({ courses }: Props) {
         >
           <div className="relative h-40">
             <Image
-              src={course.thumbnail}
+              src={course.thumbnail || '/images/courses/default.jpg'}
               alt={course.title}
               fill
               className="object-cover"
@@ -49,7 +49,7 @@ export default function EnrolledCourses({ courses }: Props) {
             </div>
             
             <div className="mt-4 text-sm text-gray-500">
-              Last accessed: {new Date(course.progress.lastAccessed).toLocaleDateString()}
+              Last accessed: {new Date(course.progress.lastAccessDate).toLocaleDateString()}
             </div>
           </div>
         </Link>
